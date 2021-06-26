@@ -294,7 +294,7 @@ class RRTStar:
             return True
         startind = 0
 
-        while (sum(arm.S[3:6,startind]) == 1):
+        while (sum(arm.S[3:6, startind]) == 1):
             startind = startind + 1
 
         poses = arm.getJointTransforms()
@@ -307,21 +307,21 @@ class RRTStar:
             zed = poses[i]
             try:
                 Tp = fsr.TMMidPoint(poses[i], poses[i+1])
-                T = fsr.TMMidRotAdjust(Tp ,poses[i], poses[i+1], mode = 1)
-                dims = Dims[i+1,0:3]
+                T = fsr.TMMidRotAdjust(Tp , poses[i], poses[i+1], mode = 1)
+                dims = Dims[i+1, 0:3]
                 dx = dims[0]
                 dy = dims[1]
                 dz = dims[2]
-                corners = .5 * np.array([[-dx,-dy,-dz],[dx, -dy, -dz],[-dx, dy, -dz],[dx, dy, -dz],[-dx, -dy, dz],[dx, -dy, dz],[-dx, dy, dz],[dx, dy, dz]]).T
-                Tc = np.zeros((3,8))
-                for i in range(0,8):
-                    h = T.gTM() @ np.array([[corners[0,i]],[corners[1,i]],[corners[2,i]],[1]])
-                    Tc[0:3,i] = np.squeeze(h[0:3])
-                segs = np.array([[1, 2],[1, 3],[2, 4],[3, 4],[1, 5],[2, 6],[3, 7],[4, 8],[5, 6],[5, 7],[6, 8],[7,8]])-1
+                corners = .5 * np.array([[-dx, -dy, -dz],[dx, -dy, -dz],[-dx, dy, -dz],[dx, dy, -dz],[-dx, -dy, dz],[dx, -dy, dz],[-dx, dy, dz],[dx, dy, dz]]).T
+                Tc = np.zeros((3, 8))
+                for i in range(0, 8):
+                    h = T.gTM() @ np.array([[corners[0, i]],[corners[1, i]],[corners[2, i]],[1]])
+                    Tc[0:3, i] = np.squeeze(h[0:3])
+                segs = np.array([[1, 2],[1, 3],[2, 4],[3, 4],[1, 5],[2, 6],[3, 7],[4, 8],[5, 6],[5, 7],[6, 8],[7, 8]])-1
                 #disp(Tc)
                 for i in range(12):
-                    a = segs[i,0]
-                    b = segs[i,1]
+                    a = segs[i, 0]
+                    b = segs[i, 1]
                     if self.Obstruction(a, b):
                         return True
             except:
@@ -329,7 +329,7 @@ class RRTStar:
         return False
 
     def addObstruction(self, L, R):
-        self.obstructions.append([tm([L[0], L[1], L[2], -2*np.pi, -2*np.pi,-2*np.pi]), tm([R[0], R[1], R[2], 2*np.pi, 2*np.pi,2*np.pi])])
+        self.obstructions.append([tm([L[0], L[1], L[2], -2*np.pi, -2*np.pi, -2*np.pi]), tm([R[0], R[1], R[2], 2*np.pi, 2*np.pi, 2*np.pi])])
 
     def generateTerrain(self, xd, yd, xc, yc, zvar, xs = 0, ys = 0):
         cx = int(xd/xc)
@@ -386,7 +386,7 @@ class RRTStar:
             self.G.place(newNode)
 
     def generateTree(self):
-        self.generalGenerateTree(lambda : self.RandomPos(), lambda x, y : self.Distance(x, y), lambda x, y : self.Obstruction(x,y))
+        self.generalGenerateTree(lambda : self.RandomPos(), lambda x, y : self.Distance(x, y), lambda x, y : self.Obstruction(x, y))
 
     def generateTreeDual(self):
         for i in range(self.iterations):
